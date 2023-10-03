@@ -1,26 +1,52 @@
-import Logo from "./assets/logo.png";
+import moment from "moment";
 import "./App.css";
+import { useAxios } from "./hooks/use-axios";
+import { getEUAffixes } from "./services/rio-api";
+import React from "react";
+import BackgroundImg from "../src/assets/bg.png";
+import { Header } from "./components/header/header";
+import { AffixesCard } from "./components/affixes-card/affixes-card";
+
+export interface AffixDetails {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+  wowhead_url: string;
+}
+
+export interface Affixes {
+  affix_details: AffixDetails[];
+}
 
 export default function App() {
+  const [affixes, setAffixes] = React.useState<AffixDetails[]>([]);
+
+  const date = moment().format("MMMM Do YYYY");
+
+  const getEUAffixesFetch = useAxios<Affixes>(getEUAffixes(), false);
+
+  React.useEffect(() => {
+    getEUAffixesFetch.executeFetch();
+  }, []);
+
+  React.useEffect(() => {
+    getEUAffixesFetch.response &&
+      setAffixes(getEUAffixesFetch.response.affix_details);
+
+    console.log(affixes);
+  }, [getEUAffixesFetch.response]);
+
   return (
-    <div className="p-10 text-center flex flex-col justify-center items-center w-screen h-screen">
-      <img className="rotate-center" width={350} src={Logo} />
-      <h1 className="text-7xl font-bold text-white">Fastplate</h1>
-      <h2
-        style={{ color: "#ed244e" }}
-        className="tracking-wider text-sm font-semibold mt-5"
-      >
-        React / React Router / TypeScript / Tailwind / DaisyUI / Heroicons /
-        Axios / SweetAlert2
-      </h2>
-      <p className="mt-10 w-1/2 text-xl">
-        This template empowers you to swiftly build responsive and dynamic web
-        applications by harnessing the capabilities of the stacks named below.
-      </p>
-      <p className="text-2xl text-white mt-20">
-        Get started by editing{" "}
-        <span style={{ color: "#ed244e" }}>App.tsx</span> file
-      </p>
+    <div
+      style={{ backgroundImage: `url(${BackgroundImg})` }}
+      className="p-10 pt-20 text-center text-white flex flex-col items-center w-screen h-screen"
+    >
+      <Header />
+      <div className="flex gap-5">
+        <AffixesCard affixes={affixes} date={date} />
+        <AffixesCard affixes={affixes} date={date} />
+      </div>
     </div>
   );
 }
