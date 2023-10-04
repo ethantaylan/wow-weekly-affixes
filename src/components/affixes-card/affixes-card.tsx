@@ -25,7 +25,7 @@ export const AffixesCard: React.FC<AffixesCardProps> = ({
         {affixes.map((affix, i: number) => (
           <div key={i} className="flex flex-col items-center mt-2">
             <img
-              src={`../src/assets/affixes/${affix.name}.jpg`}
+              src={`/src/assets/affixes/${affix.name}.jpg`}
               className="w-12 border-2 border-secondary rounded-full"
             ></img>
             <span className="ms-2 text-xl">{affix.name}</span>
